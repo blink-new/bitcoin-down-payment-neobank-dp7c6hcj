@@ -1,11 +1,13 @@
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Plus, Target, Home, Calendar, DollarSign, TrendingUp } from 'lucide-react'
+import { GoalCreationModal } from '@/components/ui/goal-creation-modal'
 
 export function SavingsGoals() {
-  const goals = [
+  const [goals, setGoals] = useState([
     {
       id: 1,
       title: 'Primary Home Down Payment',
@@ -28,7 +30,11 @@ export function SavingsGoals() {
       homePrice: 250000,
       location: 'Dallas, TX'
     }
-  ]
+  ])
+
+  const handleGoalCreated = (newGoal: any) => {
+    setGoals(prev => [...prev, newGoal])
+  }
 
   const calculateProgress = (current: number, target: number) => {
     return (current / target) * 100
@@ -50,10 +56,7 @@ export function SavingsGoals() {
             Track and manage your down payment savings goals
           </p>
         </div>
-        <Button className="bitcoin-gradient text-white">
-          <Plus className="w-4 h-4 mr-2" />
-          New Goal
-        </Button>
+        <GoalCreationModal onGoalCreated={handleGoalCreated} />
       </div>
 
       {/* Goals Overview */}
@@ -203,10 +206,15 @@ export function SavingsGoals() {
           <p className="text-muted-foreground text-center mb-4 max-w-md">
             Set up a new down payment savings goal and start building wealth through Bitcoin investments.
           </p>
-          <Button className="bitcoin-gradient text-white">
-            <Plus className="w-4 h-4 mr-2" />
-            Create New Goal
-          </Button>
+          <GoalCreationModal 
+            onGoalCreated={handleGoalCreated}
+            trigger={
+              <Button className="bitcoin-gradient text-white">
+                <Plus className="w-4 h-4 mr-2" />
+                Create New Goal
+              </Button>
+            }
+          />
         </CardContent>
       </Card>
     </div>

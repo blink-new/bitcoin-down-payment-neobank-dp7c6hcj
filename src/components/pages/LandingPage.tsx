@@ -639,7 +639,7 @@ const LandingPage = ({ onGetStarted }: LandingPageProps) => {
             </div>
           </div>
 
-          <Button size="lg" className="bg-white text-orange-600 hover:bg-gray-100 text-lg px-8 py-4">
+          <Button size="lg" className="bg-white text-orange-600 hover:bg-gray-100 text-lg px-8 py-4" onClick={onGetStarted}>
             Start Saving Today
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
@@ -769,7 +769,7 @@ const LandingPage = ({ onGetStarted }: LandingPageProps) => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
-            <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-lg px-8 py-4">
+            <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-lg px-8 py-4" onClick={onGetStarted}>
               Start Saving in Bitcoin
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>

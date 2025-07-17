@@ -4,8 +4,8 @@ import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { TrendingUp, TrendingDown, DollarSign, Bitcoin, Target, Calendar, ArrowUpRight, RefreshCw } from 'lucide-react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { blink } from '@/lib/blink'
+import { PortfolioChart } from '@/components/ui/portfolio-chart'
 
 export function Dashboard() {
   const [bitcoinPrice, setBitcoinPrice] = useState(67234.50)
@@ -163,6 +163,9 @@ export function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Portfolio Chart */}
+      <PortfolioChart data={portfolioData} className="col-span-full" />
 
       {/* Main Content Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">

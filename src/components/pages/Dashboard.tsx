@@ -1,19 +1,75 @@
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { TrendingUp, TrendingDown, DollarSign, Bitcoin, Target, Calendar, ArrowUpRight } from 'lucide-react'
+import { TrendingUp, TrendingDown, DollarSign, Bitcoin, Target, Calendar, ArrowUpRight, RefreshCw } from 'lucide-react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { blink } from '@/lib/blink'
 
 export function Dashboard() {
-  // Mock data - in real app this would come from API/database
+  const [bitcoinPrice, setBitcoinPrice] = useState(67234.50)
+  const [priceChange, setPriceChange] = useState(2.34)
+  const [loading, setLoading] = useState(false)
+  const [user, setUser] = useState(null)
+  const [lastUpdated, setLastUpdated] = useState(new Date())
+
+  // Mock data - in real app this would come from database
   const portfolioValue = 45750.32
   const totalInvested = 42000
-  const bitcoinPrice = 67234.50
-  const priceChange = 2.34
   const savingsGoal = 80000
   const goalProgress = (portfolioValue / savingsGoal) * 100
   const monthlyDCA = 2500
   const nextInvestment = "Jan 20, 2025"
+
+  // Portfolio growth chart data
+  const portfolioData = [
+    { month: 'Jan 2024', invested: 5000, value: 6200 },
+    { month: 'Feb 2024', invested: 10000, value: 11800 },
+    { month: 'Mar 2024', invested: 17500, value: 19600 },
+    { month: 'Apr 2024', invested: 20000, value: 21200 },
+    { month: 'May 2024', invested: 22500, value: 24800 },
+    { month: 'Jun 2024', invested: 25000, value: 26500 },
+    { month: 'Jul 2024', invested: 27500, value: 29800 },
+    { month: 'Aug 2024', invested: 30000, value: 32100 },
+    { month: 'Sep 2024', invested: 32500, value: 35600 },
+    { month: 'Oct 2024', invested: 35000, value: 38900 },
+    { month: 'Nov 2024', invested: 37500, value: 42300 },
+    { month: 'Dec 2024', invested: 40000, value: 43800 },
+    { month: 'Jan 2025', invested: 42000, value: 45750 },
+  ]
+
+  useEffect(() => {
+    const unsubscribe = blink.auth.onAuthStateChanged((state) => {
+      setUser(state.user)
+    })
+    return unsubscribe
+  }, [])
+
+  const fetchBitcoinPrice = async () => {
+    setLoading(true)
+    try {
+      // Using a free API to get real Bitcoin price
+      const response = await fetch('https://api.coindesk.com/v1/bpi/currentprice.json')
+      const data = await response.json()
+      const price = parseFloat(data.bpi.USD.rate.replace(/,/g, ''))
+      setBitcoinPrice(price)
+      // Simulate price change (in real app, this would be calculated from historical data)
+      setPriceChange((Math.random() - 0.5) * 10)
+      setLastUpdated(new Date())
+    } catch (error) {
+      console.error('Failed to fetch Bitcoin price:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchBitcoinPrice()
+    // Update price every 30 seconds
+    const interval = setInterval(fetchBitcoinPrice, 30000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="flex-1 space-y-6 p-6">
@@ -24,11 +80,26 @@ export function Dashboard() {
           <p className="text-muted-foreground">
             Track your Bitcoin down payment savings progress
           </p>
+          {user && (
+            <p className="text-sm text-muted-foreground mt-1">
+              Welcome back, {user.email}
+            </p>
+          )}
         </div>
-        <Button className="bitcoin-gradient text-white">
-          <DollarSign className="w-4 h-4 mr-2" />
-          Invest Now
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="outline" 
+            onClick={fetchBitcoinPrice}
+            disabled={loading}
+          >
+            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Refresh Price
+          </Button>
+          <Button className="bitcoin-gradient text-white">
+            <DollarSign className="w-4 h-4 mr-2" />
+            Invest Now
+          </Button>
+        </div>
       </div>
 
       {/* Key Metrics */}
@@ -58,7 +129,10 @@ export function Dashboard() {
           <CardContent>
             <div className="text-2xl font-bold">${bitcoinPrice.toLocaleString()}</div>
             <p className={`text-xs ${priceChange > 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {priceChange > 0 ? '+' : ''}{priceChange}% today
+              {priceChange > 0 ? '+' : ''}{priceChange.toFixed(2)}% today
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Updated {lastUpdated.toLocaleTimeString()}
             </p>
           </CardContent>
         </Card>

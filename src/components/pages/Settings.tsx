@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
-import { User, Bell, Shield, CreditCard, Calendar, Bitcoin, Settings as SettingsIcon } from 'lucide-react'
+import { User, Bell, Shield, CreditCard, Calendar, Bitcoin, Settings as SettingsIcon, Plus } from 'lucide-react'
 
 export function Settings() {
   return (
